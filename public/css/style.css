@@ -1,0 +1,31 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.home{
+    width: 810px;
+    height: 634px;
+    position: relative;
+    overflow: hidden;
+    background-image: url('../img/home.jpg');
+    background-repeat: no-repeat;
+}
+
+.home .pilote{
+    position:absolute;
+    width:466px;
+    height:957px;
+    top:213px;
+    left:334px;
+    z-index:1;
+}
+
+.like{
+    width: 810px;
+    height: 1287px;
+    position: relative;
+    overflow: hidden;
+    background-image: url('../img/like.jpg');
+    background-repeat: no-repeat;
+}
