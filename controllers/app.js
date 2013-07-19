@@ -1,29 +1,23 @@
-function parse_signed_request(signed_request, secret) {
-    encoded_data = signed_request.split('.',2);
-    // decode the data
-    sig = encoded_data[0];
-    json = base64url.decode(encoded_data[1]);
-    data = JSON.parse(json); // ERROR Occurs Here!
-
-    // check algorithm - not relevant to error
-    if (!data.algorithm || data.algorithm.toUpperCase() != 'HMAC-SHA256') {
-        console.error('Unknown algorithm. Expected HMAC-SHA256');
-        return null;
-    }
-
-    // check sig - not relevant to error
-    expected_sig = crypto.createHmac('sha256',secret).update(encoded_data[1]).digest('base64').replace(/\+/g,'-').replace(/\//g,'_').replace('=','');
-    if (sig !== expected_sig) {
-        console.error('Bad signed JSON Signature!');
-        return null;
-    }
-
-    return data;
-}
+var config  = require('../config');
+var fb_parser = require('fb-signed-parser');
 
 exports.home = function(req, res){
     function out(){
-        res.send('Hola mundo');
+        var data = fb_parser.parse(req.param('signed_request'), config.facebook.app.secret);
+        data.title = config.title;
+        data.facebook = {};
+        data.facebook.app = {};
+        data.facebook.app.id = config.facebook.app.id;
+        data.like = ( data.page.liked ) ? 1 : 0;
+        data.pilote = config.pilote;
+
+        if( data.page.liked ){
+            res.render('home',{data:data});
+        }
+        else{
+            res.render('like',{data:data});
+        }
+
     }
     return out();
 }
